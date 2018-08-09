@@ -30,16 +30,15 @@ import util
 from tensorflow.python import debug as tf_debug
 
 FLAGS = tf.app.flags.FLAGS
+# Where to find data
 
-def runfiles(datapath, vocabpath, logroot, mode, datafiles):
-
-  # Where to find data
+def runfiles(datapath, logroot, mode, vocab, datafiles, single_pass):
   tf.app.flags.DEFINE_string('data_path', datapath, 'Path expression to tf.Example datafiles. Can include wildcards to access multiple datafiles.')
-  tf.app.flags.DEFINE_string('vocab_path', vocabpath, 'Path expression to text vocabulary file.')
+  tf.app.flags.DEFINE_string('vocab_path', vocab, 'Path expression to text vocabulary file.')
 
   # Important settings
   tf.app.flags.DEFINE_string('mode', mode, 'must be one of train/eval/decode')
-  tf.app.flags.DEFINE_boolean('single_pass', False, 'For decode mode only. If True, run eval on the full dataset using a fixed checkpoint, i.e. take the current checkpoint, and use it to produce one summary for each example in the dataset, write the summaries to file and then get ROUGE scores for the whole dataset. If False (default), run concurrent decoding, i.e. repeatedly load latest checkpoint, use it to produce summaries for randomly-chosen examples and log the results to screen, indefinitely.')
+  tf.app.flags.DEFINE_boolean('single_pass', single_pass, 'For decode mode only. If True, run eval on the full dataset using a fixed checkpoint, i.e. take the current checkpoint, and use it to produce one summary for each example in the dataset, write the summaries to file and then get ROUGE scores for the whole dataset. If False (default), run concurrent decoding, i.e. repeatedly load latest checkpoint, use it to produce summaries for randomly-chosen examples and log the results to screen, indefinitely.')
 
   # Where to save output
   tf.app.flags.DEFINE_string('log_root', logroot, 'Root directory for all logging.')
@@ -74,7 +73,6 @@ def runfiles(datapath, vocabpath, logroot, mode, datafiles):
   # Debugging. See https://www.tensorflow.org/programmers_guide/debugger
   tf.app.flags.DEFINE_boolean('debug', False, "Run in tensorflow's debug mode (watches for NaN/inf values)")
 
-  # tf.app.run(main(datafiles))
   main(datafiles)
 
 

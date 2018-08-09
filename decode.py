@@ -66,25 +66,26 @@ class BeamSearchDecoder(object):
     # Load an initial checkpoint to use for decoding
     ckpt_path = util.load_ckpt(self._saver, self._sess)
 
-    if FLAGS.single_pass:
-      # Make a descriptive decode directory name
-      ckpt_name = "ckpt-" + ckpt_path.split('-')[-1] # this is something of the form "ckpt-123456"
-      self._decode_dir = os.path.join(FLAGS.log_root, get_decode_dir_name(ckpt_name))
-      if os.path.exists(self._decode_dir):
-        raise Exception("single_pass decode directory %s should not already exist" % self._decode_dir)
+    # if FLAGS.single_pass:
+    #   # Make a descriptive decode directory name
+    #   ckpt_name = "ckpt-" + ckpt_path.split('-')[-1] # this is something of the form "ckpt-123456"
+    #   self._decode_dir = os.path.join(FLAGS.log_root, get_decode_dir_name(ckpt_name))
+    #   if os.path.exists(self._decode_dir):
+    #     raise Exception("single_pass decode directory %s should not already exist" % self._decode_dir)
 
-    else: # Generic decode dir name
-      self._decode_dir = os.path.join(FLAGS.log_root, "decode")
+    # else: # Generic decode dir name
+    #   self._decode_dir = os.path.join(FLAGS.log_root, "decode")
+    self._decode_dir = os.path.join(FLAGS.log_root, "decode")
 
     # Make the decode dir if necessary
     if not os.path.exists(self._decode_dir): os.mkdir(self._decode_dir)
 
-    if FLAGS.single_pass:
-      # Make the dirs to contain output written in the correct format for pyrouge
-      self._rouge_ref_dir = os.path.join(self._decode_dir, "reference")
-      if not os.path.exists(self._rouge_ref_dir): os.mkdir(self._rouge_ref_dir)
-      self._rouge_dec_dir = os.path.join(self._decode_dir, "decoded")
-      if not os.path.exists(self._rouge_dec_dir): os.mkdir(self._rouge_dec_dir)
+    # if FLAGS.single_pass:
+    #   # Make the dirs to contain output written in the correct format for pyrouge
+    #   self._rouge_ref_dir = os.path.join(self._decode_dir, "reference")
+    #   if not os.path.exists(self._rouge_ref_dir): os.mkdir(self._rouge_ref_dir)
+    #   self._rouge_dec_dir = os.path.join(self._decode_dir, "decoded")
+    #   if not os.path.exists(self._rouge_dec_dir): os.mkdir(self._rouge_dec_dir)
 
 
   def decode(self):
@@ -93,7 +94,7 @@ class BeamSearchDecoder(object):
     counter = 0
     # keeps track of number of input files
     dict_cnt = 0
-    num_inputs = len(os.listdir(self.__datafiles.get_stories_dir()))
+    num_inputs = len([x for x in os.listdir(self.__datafiles.get_stories_dir()) if '.txt' in x])
     json_dict = {}
     # Creates new directory for different jsons
     self._time_str = str(datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
@@ -106,8 +107,8 @@ class BeamSearchDecoder(object):
         assert FLAGS.single_pass, "Dataset exhausted, but we are not in single_pass mode"
         tf.logging.info("Decoder has finished reading dataset for single_pass.")
         tf.logging.info("Output has been saved in %s and %s. Now starting ROUGE eval...", self._rouge_ref_dir, self._rouge_dec_dir)
-        results_dict = rouge_eval(self._rouge_ref_dir, self._rouge_dec_dir)
-        rouge_log(results_dict, self._decode_dir)
+        # results_dict = rouge_eval(self._rouge_ref_dir, self._rouge_dec_dir)
+        # rouge_log(results_dict, self._decode_dir)
         return
 
       original_article = batch.original_articles[0]  # string
@@ -135,32 +136,35 @@ class BeamSearchDecoder(object):
       # Removes unnecessary charactes from source article
       article_withunks = modify_article(article_withunks)
 
-      if FLAGS.single_pass:
-        self.write_for_rouge(original_abstract_sents, decoded_words, counter) # write ref summary and decoded summary to file, to eval with pyrouge later
-        counter += 1 # this is how many examples we've decoded
-      else:
-        # print_results(article_withunks, abstract_withunks, decoded_output) # log output to screen
-        #self.write_for_attnvis(article_withunks, abstract_withunks, decoded_words, best_hyp.attn_dists, best_hyp.p_gens) # write info to .json file for visualization tool
-        if not article_withunks in json_dict.keys():
-          dict_cnt += 1
-          json_dict[article_withunks] = dict_cnt
-          self.print_and_append(article_withunks, abstract_withunks, decoded_words)
-        self.write_for_attnvis(article_withunks, abstract_withunks, decoded_words, best_hyp.attn_dists, best_hyp.p_gens, json_dict) # write info to .json file for visualization tool
+      # if FLAGS.single_pass:
+      #   self.write_for_rouge(original_abstract_sents, decoded_words, counter) # write ref summary and decoded summary to file, to eval with pyrouge later
+      #   counter += 1 # this is how many examples we've decoded
+      # else:
+      #   # print_results(article_withunks, abstract_withunks, decoded_output) # log output to screen
+      #   #self.write_for_attnvis(article_withunks, abstract_withunks, decoded_words, best_hyp.attn_dists, best_hyp.p_gens) # write info to .json file for visualization tool
+      #   if not article_withunks in json_dict.keys():
+      #     dict_cnt += 1
+      #     json_dict[article_withunks] = dict_cnt
+      #     self.print_and_append(article_withunks, abstract_withunks, decoded_words)
+      #   self.write_for_attnvis(article_withunks, abstract_withunks, decoded_words, best_hyp.attn_dists, best_hyp.p_gens, json_dict) # write info to .json file for visualization tool
 
-        # Terminates the loop once all examples have been decoded.
-        if num_inputs == dict_cnt:
-          # tf.logging.info('\n\nDecoding Complete. Now printing the summary...........\n')
-          # summary_dir = os.path.join(os.path.join(self._decode_dir,self._time_str), 'summary.txt')
-          # with open(summary_dir,'r') as f:
-          #   tf.logging.info(f.read())
-          break
+      if not article_withunks in json_dict.keys():
+        dict_cnt += 1
+        json_dict[article_withunks] = dict_cnt
+        self.print_and_append(article_withunks, abstract_withunks, decoded_words)
+      self.write_for_attnvis(article_withunks, abstract_withunks, decoded_words, best_hyp.attn_dists, best_hyp.p_gens, json_dict) # write info to .json file for visualization tool
 
-        # Check if SECS_UNTIL_NEW_CKPT has elapsed; if so return so we can load a new checkpoint
-        t1 = time.time()
-        if t1-t0 > SECS_UNTIL_NEW_CKPT:
-          tf.logging.info('We\'ve been decoding with same checkpoint for %i seconds. Time to load new checkpoint', t1-t0)
-          _ = util.load_ckpt(self._saver, self._sess)
-          t0 = time.time()
+      # Terminates the loop once all examples have been decoded.
+      if num_inputs == dict_cnt:
+        tf.logging.info("Summarization Complete. Ending......")
+        break
+
+      # Check if SECS_UNTIL_NEW_CKPT has elapsed; if so return so we can load a new checkpoint
+      t1 = time.time()
+      if t1-t0 > SECS_UNTIL_NEW_CKPT:
+        tf.logging.info('We\'ve been decoding with same checkpoint for %i seconds. Time to load new checkpoint', t1-t0)
+        _ = util.load_ckpt(self._saver, self._sess)
+        t0 = time.time()
 
 
   def print_and_append(self, article_withunks, abstract_withunks, decoded_words):
@@ -181,7 +185,7 @@ class BeamSearchDecoder(object):
       article_txt = article_txt.replace(bcolors.OKGREEN,'')
       article_txt = article_txt.replace(bcolors.BOLD,'')
       f.write(article_txt)
-    tf.logging.info('Summary appended to text file.')
+    tf.logging.info('Summary appended to \'summary.txt\'')
 
 
   def write_for_rouge(self, reference_sents, decoded_words, ex_index):
