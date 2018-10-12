@@ -1,0 +1,20 @@
+The real exchange rate is one of the main adjustment variables in an open economy in case shocks affecting the country’s external accounts should occur. 
+
+By inducing changes in the relative prices of tradable goods with respect to non-tradable goods, the structure of spending and production of the economy mitigates the effects of such shocks. 
+
+For instance, if a given external shock implies a lower potential of external revenues for the economy, a real exchange rate depreciation leads to a rise in the relative price of tradable goods with respect to non-tradable ones. 
+
+This results in greater production and lower relative spending on the said goods, mitigating pressures on the country’s external accounts. 
+
+In a context in which prices are not immediately adjusted in the short term upon external shocks, the nominal exchange rate indeed adjusts first. 
+
+In this sense, the latter variable dominates short-term adjustments of the real exchange rate, and, only after a certain lag, domestic relative prices of tradable goods with respect to non-tradable goods are adjusted to the new environment. 
+
+Therefore, it is important to do a statistical analysis that would allow to pinpoint if this transmission channel is indeed present in Mexico and to measure the speed of adjustment in relative domestic prices.
+
+@highlight
+
+the structure of spending and production of economy mitigates the effects of such shocks .
+the prices are not immediately adjusted in the short term .
+if a given external shock implies a lower potential of external revenues for the economy .
+the latter variable dominates short-term adjustments of the real exchange rate .

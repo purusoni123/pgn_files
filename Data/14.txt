@@ -1,0 +1,15 @@
+Merchandise goods are mostly internationally traded goods, while services, with certain exceptions, are not. 
+
+Hence, this analysis considers merchandise as tradable goods and services as non-tradable ones. 
+
+Considering that the nominal exchange rate tends to be the first variable to adjust upon different shocks affecting real parity, from a statistical point of view it would be expected that causality would move from the bilateral real exchange rate towards relative prices; that is, that the future performance of relative prices would respond to the changes observed in the real exchange rate. 
+
+In the case of Mexico, the adjustment in relative prices in light of the changes in the real exchange rate does not seem instantaneous, but rather it takes place over a relatively ample time frame. 
+
+Additionally, changes in relative prices are smoother and seem to exclusively follow the long-term trend of the bilateral real exchange rate, without reflecting its intrinsic volatility.
+
+@highlight
+
+the nominal exchange rate tends to be the first variable to adjust upon shocks affecting real parity .
+changes in relative prices are smoother and seem to exclusively follow .
+the adjustment in the real exchange rate does not seem instantaneous .
